@@ -2,115 +2,121 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width">
-  <title> Lab 5 - Time-varying Scatterplots </title>
-
+  <title>CSCI-Final-Project</title>
+  <!-- <meta name="viewport" content="width=device-width"> -->
+  <script src="https://d3js.org/d3.v4.min.js"></script>
+  <script src ='Formula.js'></script>
   <style>
-
-
-
+  .axis path,
+    .axis line {
+      fill: none;
+      stroke: #000;
+      shape-rendering: crispEdges;
+    }
   </style>
-
 </head>
-<body>
 
-<svg width="700" height="500">
+<svg width="1000" height="200">
 </svg>
 
+<div style = "margin:100;">
+ <div style="display: table-cell; width: 150;">
+    <button id="update" onclick="updateClicked()">Hi there</button>
+  </div>
+</div>
 
-<script src="https://d3js.org/d3.v4.min.js"></script>
 
-<script>
+
+<!-- <script> -->
     
-    d3.csv("gapminder.csv", function(records){
-     // all code that relies on data go here
-        records.forEach(function (record) {
-            record.year = Number(record.year);
-            record.gdpcap = Number(record.gdpcap);
-            record.pop = Number(record.pop);
-            record.lifexp = Number(record.lifexp);
+    <!-- d3.csv("gapminder.csv", function(records){ -->
+     <!-- // all code that relies on data go here -->
+        <!-- records.forEach(function (record) { -->
+            <!-- record.year = Number(record.year); -->
+            <!-- record.gdpcap = Number(record.gdpcap); -->
+            <!-- record.pop = Number(record.pop); -->
+            <!-- record.lifexp = Number(record.lifexp); -->
 
-        });
+        <!-- }); -->
 
-        recordsByYear = {};
-        records.forEach(function (record) {
-            let year = record.year;
-            if (recordsByYear[year] == undefined)
-                recordsByYear[year] = [];
-            recordsByYear[year].push(record);
-        });
+        <!-- recordsByYear = {}; -->
+        <!-- records.forEach(function (record) { -->
+            <!-- let year = record.year; -->
+            <!-- if (recordsByYear[year] == undefined) -->
+                <!-- recordsByYear[year] = []; -->
+            <!-- recordsByYear[year].push(record); -->
+        <!-- }); -->
 
        
 
-        plot(recordsByYear[1960]);
+        <!-- plot(recordsByYear[1960]); -->
 
-    });
-
-
+    <!-- }); -->
     
-    function plot(records) {
+    <!-- function plot(records) { -->
 
-        var continent = []; // creating an array for content
+        <!-- var continent = []; // creating an array for content -->
 
-        records.forEach(function (record) {
-            continent.push(record.continent); // filter out the duplicates
-        });
+        <!-- records.forEach(function (record) { -->
+            <!-- continent.push(record.continent); // filter out the duplicates -->
+        <!-- }); -->
 
-        var colorArray = ["#B76D8B", "#7A91B9", "#35ADA4", "#7FB866", "#E1AE4E"];
+        <!-- var colorArray = ["#B76D8B", "#7A91B9", "#35ADA4", "#7FB866", "#E1AE4E"]; -->
 
-        var continentSet = new Set(continent); //// filter out the duplicates
-        continent = [...continentSet];
+        <!-- var continentSet = new Set(continent); //// filter out the duplicates -->
+        <!-- continent = [...continentSet]; -->
 
-        var yScale = d3.scaleLog()
-            .domain(d3.extent(records, function (record) {
-                return record.lifexp;
-            }))
-            .range([450, 20]);
+        <!-- var yScale = d3.scaleLog() -->
+            <!-- .domain(d3.extent(records, function (record) { -->
+                <!-- return record.lifexp; -->
+            <!-- })) -->
+            <!-- .range([450, 20]); -->
 
-        var xScale = d3.scaleLog()
-            .domain(d3.extent(records, function (record) {
-                return record.gdpcap;
-            }))
-            .range([20, 450]);
+        <!-- var xScale = d3.scaleLog() -->
+            <!-- .domain(d3.extent(records, function (record) { -->
+                <!-- return record.gdpcap; -->
+            <!-- })) -->
+            <!-- .range([20, 450]); -->
 
-        var rScale = d3.scaleLog()
-            .domain(d3.extent(records, function (record) {
-                return record.pop;
-            }))
-            .range([1, 20]);
+        <!-- var rScale = d3.scaleLog() -->
+            <!-- .domain(d3.extent(records, function (record) { -->
+                <!-- return record.pop; -->
+            <!-- })) -->
+            <!-- .range([1, 20]); -->
 
-        var colorScale = d3.scaleOrdinal()
-            .domain(continent)
-            .range(colorArray);
-        // yScale(records[0].lifexp) // scale test
+        <!-- var colorScale = d3.scaleOrdinal() -->
+            <!-- .domain(continent) -->
+            <!-- .range(colorArray); -->
+        <!-- // yScale(records[0].lifexp) // scale test -->
 
-        var selection = d3.select('svg')
-            .selectAll('circle')
-            .data(records)
-            .enter()
-            .append('circle')
-            .attr('fill', function (d) { return colorScale(d.continent); }) // colors denote continents
-            .attr('cy', function (d) { return yScale(d.lifexp); }) // life expectancy is the y scale
-            .attr('cx', function (d) { return xScale(d.gdpcap); }) // GDP cap is the x scale
-            .attr('r', function (d) { return rScale(d.pop); }); // radius scales to population size
-        selection.exit().remove();
+        <!-- var selection = d3.select('svg') -->
+            <!-- .selectAll('circle') -->
+            <!-- .data(records) -->
+            <!-- .enter() -->
+            <!-- .append('circle') -->
+            <!-- .attr('fill', function (d) { return colorScale(d.continent); }) // colors denote continents -->
+            <!-- .attr('cy', function (d) { return yScale(d.lifexp); }) // life expectancy is the y scale -->
+            <!-- .attr('cx', function (d) { return xScale(d.gdpcap); }) // GDP cap is the x scale -->
+            <!-- .attr('r', function (d) { return rScale(d.pop); }); // radius scales to population size -->
+        <!-- selection.exit().remove(); -->
 
-        var yAxis = d3.axisLeft(yScale);
-        var xAxis = d3.axisBottom(xScale);
+        <!-- var yAxis = d3.axisLeft(yScale); -->
+        <!-- var xAxis = d3.axisBottom(xScale); -->
 
-        d3.select('svg')
-            .append('g')
-            .attr("transform", "translate(20,0)")
-            .call(yAxis);
+        <!-- d3.select('svg') -->
+            <!-- .append('g') -->
+            <!-- .attr("transform", "translate(20,0)") -->
+            <!-- .call(yAxis); -->
 
-        d3.select('svg')
-            .append('g')
-            .attr("transform", "translate(10, 450)")
-            .call(xAxis);
-    }
+        <!-- d3.select('svg') -->
+            <!-- .append('g') -->
+            <!-- .attr("transform", "translate(10, 450)") -->
+            <!-- .call(xAxis); -->
+    <!-- } -->
    
 
-</script> 
+<!-- </script>  -->
+<div id="vis"></div>
 
 </body>
 </html>

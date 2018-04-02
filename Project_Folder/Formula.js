@@ -13,7 +13,9 @@ function init(){
 
 //Called when the update button is clicked
 function updateClicked(){
-  d3.csv('data/CoffeeData.csv',update)
+  d3.csv('data/Clean-3/WHOSIS_000004-clean.csv',function(data))
+  {
+  }
 }
 
 //Callback for when data is loaded
