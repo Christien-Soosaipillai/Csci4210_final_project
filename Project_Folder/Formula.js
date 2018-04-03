@@ -1,8 +1,9 @@
 var chart;
 var margin = {top: 60, right: 100, bottom: 70, left: 80},
-  width = 850 - margin.left - margin.right,
-  height = 370 - margin.top - margin.bottom;
+  width = 850 ,
+  height = 370 ;
 var svg;
+var choosen = 0;
 //DEFINE YOUR VARIABLES UP HERE
 
 
@@ -36,12 +37,18 @@ var health_prec_max;
 
 //Gets called when the page is loaded.
 function init(){
+
+
+
   svg = d3.select("body").append("svg")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
     .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 }
+
+
+
 
 
 
@@ -60,15 +67,22 @@ var yValue = function(d) { return d.lifexp;}, // data -> value
 
 //Called when the update button is clicked
 function updateClicked(){
+  svg.selectAll("*").remove();
+
   d3.csv('data/Clean-3/cleandata.csv',function(data){
         
       //Sort by country
       var country_data_sort = d3.nest()
-                                .key(function(d){return d.country;})
+                                .key(function(d){return d.year;})
+                                .sortKeys(d3.ascending)
                                 .entries(data);  
-      
+
+  
+      //console.log(country_data_sort[4].values[1].gdpus);
+
   xScale.domain([d3.min(data, xValue)-1, d3.max(data, xValue)+1]);
   yScale.domain([d3.min(data, yValue)-1, d3.max(data, yValue)+1]);
+
 
   // x-axis
   svg.append("g")
@@ -94,10 +108,27 @@ function updateClicked(){
       .style("text-anchor", "middle")
       .text("Life Expectancy");
 
+  // draw dots
+  svg.selectAll(".dot")
+      .data(country_data_sort[choosen].values)
+    .enter().append("circle")
+      .attr("class", "dot")
+      .attr("r", 3.5)
+      .attr("cx", xMap)
+      .attr("cy", yMap)
+      .style("fill", 'red');
+
     
       console.log(country_data_sort);
       
       });
+  
+}
+
+//Year Slider
+function sliderChange(val){
+  choosen = val - 2003;
+  document.getElementById('sliderStatus').innerHTML = val;
   
 }
 

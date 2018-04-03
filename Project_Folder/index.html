@@ -17,14 +17,23 @@
 </head>
 <body onload="init()">
 
+
+
 <svg width="1000" height="200">
 </svg>
 
 <div style = "margin:100;">
  <div style="display: table-cell; width: 150;">
-    <button id="update" onclick="updateClicked()">Hi there</button>
+ <input style = "margin-top:100px;" type="range" min="2003" max="2013" value ="2003" step ="1" onChange="sliderChange(this.value)">
+    <div style = "margin-left:65px;">
+        Year: <span id="sliderStatus">2003</span>
+    </div>
+    <button style = "margin-left:65px;" id="update" onclick="updateClicked()">Start</button>
   </div>
 </div>
+
+</body>
+</html>
 
 
 
@@ -117,7 +126,3 @@
    
 
 <!-- </script>  -->
-<div id="vis"></div>
-
-</body>
-</html>
