@@ -1,4 +1,5 @@
 country, Code,year,gdpus,gdpint,lifexp,healthpercent,population
+scale,scale,scale,0,0,0,0,0
 Afghanistan,AFG,2003,198.7285436,922.8294492,57.25,8.81605343,25678639
 Afghanistan,AFG,2004,219.1413528,916.3344748,57.875,8.78670722,26693486
 Afghanistan,AFG,2005,250.2941299,1011.595524,58.5,8.06810435,27614718

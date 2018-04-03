@@ -1,7 +1,7 @@
 var chart;
 var margin = {top: 60, right: 100, bottom: 70, left: 80},
-  width = 850 ,
-  height = 370 ;
+  width = 850- margin.left - margin.right,
+  height = 370 -margin.top - margin.bottom;
 var svg;
 var choosen = 0;
 //DEFINE YOUR VARIABLES UP HERE
