@@ -35,12 +35,13 @@ var health_prec_max;
 
 
 //Gets called when the page is loaded.
-
+function init(){
   svg = d3.select("body").append("svg")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
     .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+}
 
 
 
@@ -76,10 +77,10 @@ function updateClicked(){
       .call(xAxis)
     .append("text")
       .attr("class", "label")
-      .attr("x", width)
-      .attr("y", -6)
-      .style("text-anchor", "end")
-      .text("Calories");
+      .attr("x", width/2)
+      .attr("y", 40)
+      .style("text-anchor", "middle")
+      .text("GDP US");
 
   // y-axis
   svg.append("g")
@@ -88,10 +89,10 @@ function updateClicked(){
     .append("text")
       .attr("class", "label")
       .attr("transform", "rotate(-90)")
-      .attr("y", 6)
-      .attr("dy", ".71em")
-      .style("text-anchor", "end")
-      .text("Protein (g)");
+      .attr("x", -100)
+      .attr("dy", "-2.40em")
+      .style("text-anchor", "middle")
+      .text("Life Expectancy");
 
     
       console.log(country_data_sort);
