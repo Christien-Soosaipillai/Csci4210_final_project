@@ -157,7 +157,16 @@ function update(data)
 
     //}
     
-    
+    /*
+		for (every element in the csv)
+		{
+			for (every characteristic of each element)
+			{
+				// characteristics can be gdp, life expectancy, healthcare expenditure, etc.  Weight value must be constant for that specific characteristic (weight for gdp, weight for health, weight for lifexp)...
+				result += ((characteristic value) - (min characteristic value) / ( max characteristic value) - (min characteristic value)) * some weight value of that charactistic
+			}
+		}
+	*/
 
 
 
