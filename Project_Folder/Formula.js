@@ -1,9 +1,30 @@
 var chart;
 var margin = {top: 60, right: 100, bottom: 70, left: 80},
-  width = 850- margin.left - margin.right,
+  width = 1000- margin.left - margin.right,
   height = 370 -margin.top - margin.bottom;
 var svg;
-var choosen = 0;
+//chosen year interval value
+var chosen = 0;
+//actual year
+var yearval = 0;
+//values containing selected continent and year
+var newList = [];
+//values with aggrigatted value as well
+var cleanList = [];
+//list of continents selected
+var continents = [];
+
+//color scale
+colorArray = ["#EAA851", "#99E584", "#62FACA", "#62B3D1", "#E490BB"]; 
+
+//color matching contenent list
+dataArray = ["Americas", "Africa", "Asia", "Europe", "Oceania"];
+
+//colourscale
+var colorScale = d3.scaleOrdinal()
+     .domain(dataArray)
+     .range(colorArray);
+
 //DEFINE YOUR VARIABLES UP HERE
 
 
@@ -38,21 +59,35 @@ var health_prec_max;
 //Gets called when the page is loaded.
 function init(){
 
-
-
   svg = d3.select("body").append("svg")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
     .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    
 }
 
 
 
+//Called when the update button is clicked
+function updateClicked(){
 
+  //Reset
+  svg.selectAll("*").remove();
+  continents = [];
+  newList = [];
+  cleanList = [];
+  xValue = 0;
+  xScale = 0;
+  xMap = 0;
+  xAxis = 0;
+  yValue = 0;
+  yScale = 0;
+  yMap = 0;
+  yAxis = 0;  
 
-
-// setup x 
+  // setup x 
 var xValue = function(d) { return d.gdpus;}, // data -> value
     xScale = d3.scale.linear().range([0, width]), // value -> display
     xMap = function(d) { return xScale(xValue(d));}, // data -> display
@@ -65,9 +100,20 @@ var yValue = function(d) { return d.lifexp;}, // data -> value
     yAxis = d3.svg.axis().scale(yScale).orient("left");
 
 
-//Called when the update button is clicked
-function updateClicked(){
-  svg.selectAll("*").remove();
+// Define the div for the tooltip
+var div = d3.select("body").append("div") 
+    .attr("class", "tooltip")       
+    .style("opacity", 0);
+
+  //Year sliderChange
+  var val = document.getElementById('slider').value; 
+  console.log(val); 
+  yearval = val;
+  chosen = val - 2003;
+  document.getElementById('sliderStatus').innerHTML = val;
+  
+  
+
 
   d3.csv('data/Clean-3/cleandata.csv',function(data){
         
@@ -76,12 +122,23 @@ function updateClicked(){
                                 .key(function(d){return d.year;})
                                 .sortKeys(d3.ascending)
                                 .entries(data);  
+      getChecked();
 
+      //console.log(country_data_sort);
+
+      //console.log(chosen); 
+      for(var i=0; i < data.length; i++){
+          if((continents.indexOf(data[i].continent) !== -1) && data[i].year === yearval){
+            newList.push(data[i]);  
+          }
+      }
+
+      cleanList = normalize(newList);
+      console.log(cleanList);
   
-      //console.log(country_data_sort[4].values[1].gdpus);
-
-  xScale.domain([d3.min(data, xValue)-1, d3.max(data, xValue)+1]);
-  yScale.domain([d3.min(data, yValue)-1, d3.max(data, yValue)+1]);
+      console.log(continents);
+  xScale.domain([0, 65000]);
+  yScale.domain([40, 95]);
 
 
   // x-axis
@@ -109,77 +166,114 @@ function updateClicked(){
       .text("Life Expectancy");
 
   // draw dots
+  //console.log(country_data_sort[chosen].values);
+
   svg.selectAll(".dot")
-      .data(country_data_sort[choosen].values)
+      .data(cleanList)
     .enter().append("circle")
       .attr("class", "dot")
       .attr("r", 3.5)
       .attr("cx", xMap)
       .attr("cy", yMap)
-      .style("fill", 'red');
+      .attr("fill", function (d) { return colorScale(d.continent)})
+      .on("mouseover", function(d) {  
+            insert(d['country'], d['gdpus'], d['lifexp']);
+    });
+  });
+  
+}
 
+
+
+
+function insert(c_name, x, y){
+    //document.getElementById('country').innerHTML = "";
+    document.getElementById('country').value = c_name;
+    document.getElementById('x_value').value = '$'+x;
+    document.getElementById('y_value').value = y + ' years';
+}
+
+
+
+
+//Callback for when data is loaded to
+function normalize(data){
+
+  //data for selected year
+  //console.log(data);
+
+  var max = {};
+   var min = {};
+
+var weights = {};
+
+
+//this will give all the values per country 
+  for(var i = 0; i < data.length; i++){
+    Object.keys(data[i]).forEach(function(key,index){
+        //console.log(data[i][key]);
+        if(!(key in max)){
+          max[key] = data[i][key];
+        }
+        else{
+          if(max[key] < data[i][key])
+            max[key] = data[i][key];
+        }
+         if(!(key in min)){
+          min[key] = data[i][key];
+        }
+        else{
+          if(min[key] > data[i][key])
+            min[key] = data[i][key];
+        }
+         if(!(key in weights)){
+          weights[key] = 1.0;
+        }
+        
+
+    });
+  }
+
+
+//formula loop
+//read through each data set
+for(var i = 0; i < data.length; i++){
+    //read through each key for each object in the data set
+    Object.keys(data[i]).forEach(function(key,index){
+       
+      if(isNaN(Math.abs(((data[i][key] - min[key]) / (max[key] - min[key]) * weights[key])))){
+       
+     }else{
+      data[i]["Agg"] =  Math.abs(((data[i][key] - min[key]) / (max[key] - min[key]) * weights[key]));
+       //console.log(data[i].index +": "+data[i]["Agg"]);
+     }
+       
+    });
+     }
+  
+  return data;
+
+}
+
+
+//automatically hange the slider display year
+function sliderChange(value){
+  var slider = document.getElementById("slider").value;
+  document.getElementById('sliderStatus').innerHTML = slider;
+}
+
+
+//check which continents are selected
+function getChecked(){
+
+  var checkedValue = null;
+  var inputElements = document.getElementById('Country_check');
+  for(var i=0; inputElements[i]; ++i){
+    if(inputElements[i].checked){
+      continents.push(inputElements[i].value);
+    }
     
-      console.log(country_data_sort);
-      
-      });
-  
-}
-
-//Year Slider
-function sliderChange(val){
-  choosen = val - 2003;
-  document.getElementById('sliderStatus').innerHTML = val;
-  
-}
-
-//Callback for when data is loaded
-function update(data)
-{
-    /*
-  I will Need: 
-  - a data class that stores 
-    - the min
-    - the max
-    - an array of the data (doesn't need to have country labels) 
-    - the current weight of it 
-
-   - I will need to be passed 
-    - a vector of the data class so that I know how many i am dealing with here.     
-  */
-
-  
-   // for (int i =0; i < StorageVector.length; i++)         // iterates through the array of classes
-    //{
-     //   for (int j = 0; j < storageVector[i].array.length; j++)       // iterates through the internal array of the class
-        //{ 
-        // result +=(( StorageVector[i].Array[j] -  StorageVector[i].min) / ( StorageVector[i].max -  StorageVector[i].min ))*  StorageVector[i].weight;
-        //}
-
-    //}
-    
-    /*
-		for (every element in the csv)
-		{
-			for (every characteristic of each element)
-			{
-				// characteristics can be gdp, life expectancy, healthcare expenditure, etc.  Weight value must be constant for that specific characteristic (weight for gdp, weight for health, weight for lifexp)...
-				result += ((characteristic value) - (min characteristic value) / ( max characteristic value) - (min characteristic value)) * some weight value of that charactistic
-			}
-		}
-	*/
-
-
-
-  //
-}
-
-// Returns the selected option in the X-axis dropdown. Use d[getXSelectedOption()] to retrieve value instead of d.getXSelectedOption()
-function getXSelectedOption(){
- 
-}
-
-// Returns the selected option in the X-axis dropdown. 
-function getYSelectedOption(){
-  
+  }
+  console.log("here: " + continents);
 }
 

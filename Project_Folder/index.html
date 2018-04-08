@@ -13,6 +13,25 @@
       stroke: #000;
       shape-rendering: crispEdges;
     }
+
+div.tooltip {   
+    position: absolute;         
+    text-align: center;         
+    width: 60px;                    
+    height: 28px;                   
+    padding: 2px;               
+    font: 12px sans-serif;      
+    background: lightsteelblue; 
+    border: 0px;        
+    border-radius: 8px;         
+    pointer-events: none;           
+}
+
+label {
+  display: inline-block;
+  width: 140px;
+  text-align: right;
+}​
   </style>
 </head>
 <body onload="init()">
@@ -23,8 +42,19 @@
 </svg>
 
 <div style = "margin:100;">
- <div style="display: table-cell; width: 150;">
- <input style = "margin-top:100px;" type="range" min="2003" max="2013" value ="2003" step ="1" onChange="sliderChange(this.value)">
+ <div style="display: table-cell; width: 150; float: right; margin-right: 100px;">
+ 
+
+ 
+ <form id="Country_check" action="/action_page.php" method="get">
+  <input type="checkbox" name="vehicle" value="Americas">Americas<br>
+  <input type="checkbox" name="vehicle" value="Africa">Africa<br>
+  <input type="checkbox" name="vehicle" value="Asia">Asia<br>
+  <input type="checkbox" name="vehicle" value="Europe">Europe<br>
+  <input type="checkbox" name="vehicle" value="Oceania">Oceania<br> 
+</form>
+
+<input id="slider" style = "" type="range" min="2003" max="2013" value ="2003" step ="1" onChange="sliderChange(this.value)">
     <div style = "margin-left:65px;">
         Year: <span id="sliderStatus">2003</span>
     </div>
@@ -32,97 +62,14 @@
   </div>
 </div>
 
+<br>
+    <label id="c_label" for="country">Country:</label>
+    <input id="country"></input><br>
+    <label id="x_label" for="x_value">Gdp US:</label>
+    <input id="x_value"></input><br>
+    <label id="y_label" for="y_value">Life Expectancy:</label>
+    <input id="y_value"></input>
+</br>
 </body>
 </html>
 
-
-
-<!-- <script> -->
-    
-    <!-- d3.csv("gapminder.csv", function(records){ -->
-     <!-- // all code that relies on data go here -->
-        <!-- records.forEach(function (record) { -->
-            <!-- record.year = Number(record.year); -->
-            <!-- record.gdpcap = Number(record.gdpcap); -->
-            <!-- record.pop = Number(record.pop); -->
-            <!-- record.lifexp = Number(record.lifexp); -->
-
-        <!-- }); -->
-
-        <!-- recordsByYear = {}; -->
-        <!-- records.forEach(function (record) { -->
-            <!-- let year = record.year; -->
-            <!-- if (recordsByYear[year] == undefined) -->
-                <!-- recordsByYear[year] = []; -->
-            <!-- recordsByYear[year].push(record); -->
-        <!-- }); -->
-
-       
-
-        <!-- plot(recordsByYear[1960]); -->
-
-    <!-- }); -->
-    
-    <!-- function plot(records) { -->
-
-        <!-- var continent = []; // creating an array for content -->
-
-        <!-- records.forEach(function (record) { -->
-            <!-- continent.push(record.continent); // filter out the duplicates -->
-        <!-- }); -->
-
-        <!-- var colorArray = ["#B76D8B", "#7A91B9", "#35ADA4", "#7FB866", "#E1AE4E"]; -->
-
-        <!-- var continentSet = new Set(continent); //// filter out the duplicates -->
-        <!-- continent = [...continentSet]; -->
-
-        <!-- var yScale = d3.scaleLog() -->
-            <!-- .domain(d3.extent(records, function (record) { -->
-                <!-- return record.lifexp; -->
-            <!-- })) -->
-            <!-- .range([450, 20]); -->
-
-        <!-- var xScale = d3.scaleLog() -->
-            <!-- .domain(d3.extent(records, function (record) { -->
-                <!-- return record.gdpcap; -->
-            <!-- })) -->
-            <!-- .range([20, 450]); -->
-
-        <!-- var rScale = d3.scaleLog() -->
-            <!-- .domain(d3.extent(records, function (record) { -->
-                <!-- return record.pop; -->
-            <!-- })) -->
-            <!-- .range([1, 20]); -->
-
-        <!-- var colorScale = d3.scaleOrdinal() -->
-            <!-- .domain(continent) -->
-            <!-- .range(colorArray); -->
-        <!-- // yScale(records[0].lifexp) // scale test -->
-
-        <!-- var selection = d3.select('svg') -->
-            <!-- .selectAll('circle') -->
-            <!-- .data(records) -->
-            <!-- .enter() -->
-            <!-- .append('circle') -->
-            <!-- .attr('fill', function (d) { return colorScale(d.continent); }) // colors denote continents -->
-            <!-- .attr('cy', function (d) { return yScale(d.lifexp); }) // life expectancy is the y scale -->
-            <!-- .attr('cx', function (d) { return xScale(d.gdpcap); }) // GDP cap is the x scale -->
-            <!-- .attr('r', function (d) { return rScale(d.pop); }); // radius scales to population size -->
-        <!-- selection.exit().remove(); -->
-
-        <!-- var yAxis = d3.axisLeft(yScale); -->
-        <!-- var xAxis = d3.axisBottom(xScale); -->
-
-        <!-- d3.select('svg') -->
-            <!-- .append('g') -->
-            <!-- .attr("transform", "translate(20,0)") -->
-            <!-- .call(yAxis); -->
-
-        <!-- d3.select('svg') -->
-            <!-- .append('g') -->
-            <!-- .attr("transform", "translate(10, 450)") -->
-            <!-- .call(xAxis); -->
-    <!-- } -->
-   
-
-<!-- </script>  -->
