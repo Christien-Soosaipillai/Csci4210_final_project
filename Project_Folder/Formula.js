@@ -14,6 +14,7 @@ var cleanList = [];
 //list of continents selected
 var continents = [];
 
+//continents Scale
 //color scale
 colorArray = ["#EAA851", "#99E584", "#62FACA", "#62B3D1", "#E490BB"]; 
 
@@ -21,7 +22,7 @@ colorArray = ["#EAA851", "#99E584", "#62FACA", "#62B3D1", "#E490BB"];
 dataArray = ["Americas", "Africa", "Asia", "Europe", "Oceania"];
 
 //colourscale
-var colorScale = d3.scaleOrdinal()
+var colorScale = d3.scale.ordinal()
      .domain(dataArray)
      .range(colorArray);
 
@@ -172,12 +173,13 @@ var div = d3.select("body").append("div")
       .data(cleanList)
     .enter().append("circle")
       .attr("class", "dot")
-      .attr("r", 3.5)
+      .attr("r", function (d) { return scalePop(d.population)})
       .attr("cx", xMap)
       .attr("cy", yMap)
-      .attr("fill", function (d) { return colorScale(d.continent)})
+      .style("stroke","black")
+      .attr("fill", function (d) { return colorScale(d.continent)}) 
       .on("mouseover", function(d) {  
-            insert(d['country'], d['gdpus'], d['lifexp']);
+            insert(d['country'], d['gdpus'], d['lifexp'],d['population']);
     });
   });
   
@@ -186,15 +188,34 @@ var div = d3.select("body").append("div")
 
 
 
-function insert(c_name, x, y){
+function insert(c_name, x, y, z){
     //document.getElementById('country').innerHTML = "";
     document.getElementById('country').value = c_name;
     document.getElementById('x_value').value = '$'+x;
     document.getElementById('y_value').value = y + ' years';
+    document.getElementById('pop_value').value =z;
 }
 
 
 
+function scalePop(val){
+  if(val >= 0 && val <=100000){
+    val = 2;
+    return val;
+  }else if(val > 100000 && val <= 500000){
+    val = 4;
+    return val;
+  }else if(val > 500000 && val <= 1000000){
+    val = 5;
+    return val;
+  }else if(val > 1000000 && val <= 10000000){
+    val = 7;
+    return val;
+  }else{
+    val = 9;
+    return val;
+  }
+}
 
 //Callback for when data is loaded to
 function normalize(data){
