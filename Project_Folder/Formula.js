@@ -1,7 +1,7 @@
 var chart;
 var margin = {top: 60, right: 100, bottom: 70, left: 80},
   width = 1000- margin.left - margin.right,
-  height = 370 -margin.top - margin.bottom;
+  height = 700 -margin.top - margin.bottom;
 var svg;
 //chosen year interval value
 var chosen = 0;
@@ -70,7 +70,8 @@ function init(){
 function updateClicked(){
 
   //Reset for all recurssive variables
-  svg.selectAll("*").remove();
+  svg.selectAll("*")
+	.remove();
   continents = [];
   newList = [];
   cleanList = [];
@@ -154,10 +155,12 @@ var div = d3.select("body").append("div")
         .call(xAxis)
         .append("text")
         .attr("class", "label")
+		.transition()
+		.duration(1000)
         .attr("x", width/2)
         .attr("y", 40)
         .style("text-anchor", "middle")
-        .text("Aggreigate Value");
+        .text("Aggregate Value");
 
       // y-axis
       svg.append("g")
@@ -166,6 +169,8 @@ var div = d3.select("body").append("div")
         .append("text")
         .attr("class", "label")
         .attr("transform", "rotate(-90)")
+		.transition()
+		.duration(1000)
         .attr("x", -100)
         .attr("dy", "-2.40em")
         .style("text-anchor", "middle")
@@ -180,7 +185,7 @@ var div = d3.select("body").append("div")
         .attr("cx", xMap)
         .attr("cy", yMap)
         .style("stroke","black")
-        .attr("fill", function (d) { return colorScale(d.continent)}) 
+        .attr("fill", function (d) { return colorScale(d.continent)})
         .on("mouseover", function(d) {  
             //mouseover to get values and insert into text field
             insert(d['country'], d['gdpus'], d['lifexp'],d['population'],d['healthpercent']);
