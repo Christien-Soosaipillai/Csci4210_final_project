@@ -32,6 +32,17 @@ label {
   width: 140px;
   text-align: right;
 }​
+
+#circle {
+      width: 50px;
+      height: 50px;
+      -webkit-border-radius: 25px;
+      -moz-border-radius: 25px;
+      border-radius: 25px;
+      background: blue;
+      
+    }
+
   </style>
 </head>
 <body onload="init()">
@@ -46,12 +57,12 @@ label {
  
 
  
- <form id="Country_check" action="/action_page.php" method="get">
-  <input type="checkbox" value="Americas">Americas<br>
-  <input type="checkbox" value="Africa">Africa<br>
-  <input type="checkbox" value="Asia">Asia<br>
-  <input type="checkbox" value="Europe">Europe<br>
-  <input type="checkbox" value="Oceania">Oceania<br> 
+ <form id="Country_check" action="/action_page.php" method="get"><u>Continents:</u><br>
+  <input type="checkbox" value="Americas">Americas<svg height="10" width="10"><circle cx="4.5" cy="5" r="5" stroke="black" stroke-width="1" fill="#EAA851"/></svg><br>
+  <input type="checkbox" value="Africa">Africa<svg height="10" width="10"><circle cx="4.5" cy="5" r="5" stroke="black" stroke-width="1" fill="#99E584"/></svg><br>
+  <input type="checkbox" value="Asia">Asia<svg height="10" width="10"><circle cx="4.5" cy="5" r="5" stroke="black" stroke-width="1" fill="#62FACA"/></svg><br>
+  <input type="checkbox" value="Europe">Europe<svg height="10" width="10"><circle cx="4.5" cy="5" r="5" stroke="black" stroke-width="1" fill="#62B3D1"/></svg><br>
+  <input type="checkbox" value="Oceania">Oceania<svg height="10" width="10"><circle cx="4.5" cy="5" r="5" stroke="black" stroke-width="1" fill="#E490BB"/></svg><br> 
 </form>
 
 <input id="slider" style = "" type="range" min="2003" max="2013" value ="2003" step ="1" onChange="sliderChange(this.value)">
@@ -63,7 +74,7 @@ label {
 </div>
 
 <br>
-
+    <label><u>Variables:</u></label><br>
     <!--Country label-->
     <label id="c_label" for="country">Country:</label>
     <input id="country"></input><br>

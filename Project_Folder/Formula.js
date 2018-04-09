@@ -33,18 +33,6 @@ var colorScale = d3.scale.ordinal()
      .domain(dataArray)
      .range(colorArray);
 
-//DEFINE YOUR VARIABLES UP HERE
-
-
-//java parsed values
-// GDP_US_MIN=112.8493703
-// GDP_US_MAX=115761.5077
-// GDP_INTER_MIN=0.0
-// GDP_INTER_MIN=129349.9164
-// life min=41.668999
-// life max=83.480003
-// health care min=1.63062912
-// health care max=53.0
 
 //GDP US values
 var gdp_Us_min;
@@ -78,10 +66,10 @@ function init(){
 
 
 
-//Called when the update button is clicked
+//Called when the update button is clicked to update vis
 function updateClicked(){
 
-  //Reset
+  //Reset for all recurssive variables
   svg.selectAll("*").remove();
   continents = [];
   newList = [];
@@ -115,8 +103,7 @@ var div = d3.select("body").append("div")
     .style("opacity", 0);
 
   //Year sliderChange
-  var val = document.getElementById('slider').value; 
-  console.log(val); 
+  var val = document.getElementById('slider').value;  
   yearval = val;
   chosen = val - 2003;
   document.getElementById('sliderStatus').innerHTML = val;
@@ -141,11 +128,9 @@ var div = d3.select("body").append("div")
 
       gdp_weight = document.getElementById('gdp_weight');
       gdp_weight_val = gdp_weight.options[gdp_weight.selectedIndex].value;
-      total_weight = parseInt(gdp_weight_val) + parseInt(health_weight_val);
-      console.log(gdp_weight_val + "+" + health_weight_val + "=" + total_weight);
-      
+      total_weight = parseInt(gdp_weight_val) + parseInt(health_weight_val);    
 
-      
+      //check if data values match continents & year selected
       for(var i=0; i < data.length; i++){
           if((continents.indexOf(data[i].continent) !== -1) && data[i].year === yearval){
 
@@ -153,72 +138,71 @@ var div = d3.select("body").append("div")
           }
       }
 
+      //normalize the data for min and max values
       cleanList = normalize(newList);
-      console.log(cleanList);
+      
   
-      //console.log(continents);
-  xScale.domain([0, d3.max(cleanList, xValue)+1]);
-  yScale.domain([0, 95]);
+      //
+      xScale.domain([0, d3.max(cleanList, xValue)+1]);
+      yScale.domain([0, 95]);
 
 
-  // x-axis
-  svg.append("g")
-      .attr("class", "x axis")
-      .attr("transform", "translate(0," + height + ")")
-      .call(xAxis)
-    .append("text")
-      .attr("class", "label")
-      .attr("x", width/2)
-      .attr("y", 40)
-      .style("text-anchor", "middle")
-      .text("Aggreigate Value");
+      // x-axis
+      svg.append("g")
+        .attr("class", "x axis")
+        .attr("transform", "translate(0," + height + ")")
+        .call(xAxis)
+        .append("text")
+        .attr("class", "label")
+        .attr("x", width/2)
+        .attr("y", 40)
+        .style("text-anchor", "middle")
+        .text("Aggreigate Value");
 
-  // y-axis
-  svg.append("g")
-      .attr("class", "y axis")
-      .call(yAxis)
-    .append("text")
-      .attr("class", "label")
-      .attr("transform", "rotate(-90)")
-      .attr("x", -100)
-      .attr("dy", "-2.40em")
-      .style("text-anchor", "middle")
-      .text("Life Expectancy");
+      // y-axis
+      svg.append("g")
+        .attr("class", "y axis")
+        .call(yAxis)
+        .append("text")
+        .attr("class", "label")
+        .attr("transform", "rotate(-90)")
+        .attr("x", -100)
+        .attr("dy", "-2.40em")
+        .style("text-anchor", "middle")
+        .text("Life Expectancy");
 
-  // draw dots
-  //console.log(country_data_sort[chosen].values);
-
-  svg.selectAll(".dot")
-      .data(cleanList)
-    .enter().append("circle")
-      .attr("class", "dot")
-      .attr("r", function (d) { return scalePop(d.population)})
-      .attr("cx", xMap)
-      .attr("cy", yMap)
-      .style("stroke","black")
-      .attr("fill", function (d) { return colorScale(d.continent)}) 
-      .on("mouseover", function(d) {  
+      // draw dots
+      svg.selectAll(".dot")
+        .data(cleanList)
+        .enter().append("circle")
+        .attr("class", "dot")
+        .attr("r", function (d) { return scalePop(d.population)})
+        .attr("cx", xMap)
+        .attr("cy", yMap)
+        .style("stroke","black")
+        .attr("fill", function (d) { return colorScale(d.continent)}) 
+        .on("mouseover", function(d) {  
+            //mouseover to get values and insert into text field
             insert(d['country'], d['gdpus'], d['lifexp'],d['population'],d['healthpercent']);
+      });
     });
-  });
-  
 }
 
 
 
-
+//insert values into text fields
 function insert(c_name, x, y, z, i){
-    //document.getElementById('country').innerHTML = "";
+    
     document.getElementById('country').value = c_name;
     document.getElementById('x_value').value = '$'+x;
     document.getElementById('y_value').value = y + ' years';
     document.getElementById('pop_value').value =z;
     document.getElementById('health_value').value =i;
-
 }
 
 
-
+//scale population size to get radius for the circle being plotted
+//radius of cicle represents population of country
 function scalePop(val){
   if(val >= 0 && val <=100000){
     val = 2;
@@ -241,13 +225,10 @@ function scalePop(val){
 //Callback for when data is loaded to
 function normalize(data){
 
-  //data for selected year
-  //console.log(data);
 
   var max = {};
-   var min = {};
-
-var weights = {};
+  var min = {};
+  var weights = {};
 
 
 //this will give all the values per country 
@@ -286,8 +267,9 @@ for(var i = 0; i < data.length; i++){
       if(isNaN(Math.abs(((data[i][key] - min[key]) / (max[key] - min[key]) * weights[key])))){
        
      }else{
+      //push back new aggrigate data value into data set
       data[i]["Agg"] =  Math.abs(((data[i][key] - min[key]) / (max[key] - min[key]) * weights[key]));
-       //console.log(data[i].index +": "+data[i]["Agg"]);
+       
      }
        
     });
@@ -298,7 +280,7 @@ for(var i = 0; i < data.length; i++){
 }
 
 
-//automatically hange the slider display year
+//automatically change the slider display year
 function sliderChange(value){
   var slider = document.getElementById("slider").value;
   document.getElementById('sliderStatus').innerHTML = slider;
@@ -316,8 +298,5 @@ function getChecked(){
     }
     
   }
-
-
-  console.log("here: " + continents);
 }
 
