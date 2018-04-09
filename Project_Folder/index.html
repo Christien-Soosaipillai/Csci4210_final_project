@@ -47,11 +47,11 @@ label {
 
  
  <form id="Country_check" action="/action_page.php" method="get">
-  <input type="checkbox" name="vehicle" value="Americas">Americas<br>
-  <input type="checkbox" name="vehicle" value="Africa">Africa<br>
-  <input type="checkbox" name="vehicle" value="Asia">Asia<br>
-  <input type="checkbox" name="vehicle" value="Europe">Europe<br>
-  <input type="checkbox" name="vehicle" value="Oceania">Oceania<br> 
+  <input type="checkbox" value="Americas">Americas<br>
+  <input type="checkbox" value="Africa">Africa<br>
+  <input type="checkbox" value="Asia">Asia<br>
+  <input type="checkbox" value="Europe">Europe<br>
+  <input type="checkbox" value="Oceania">Oceania<br> 
 </form>
 
 <input id="slider" style = "" type="range" min="2003" max="2013" value ="2003" step ="1" onChange="sliderChange(this.value)">
@@ -63,14 +63,37 @@ label {
 </div>
 
 <br>
+
+    <!--Country label-->
     <label id="c_label" for="country">Country:</label>
     <input id="country"></input><br>
-    <label id="x_label" for="x_value">Gdp US:</label>
-    <input id="x_value"></input><br>
     <label id="y_label" for="y_value">Life Expectancy:</label>
     <input id="y_value"></input><br>
     <label id="pop_label" for="pop_value">Population:</label>
-    <input id="pop_value"></input>
+    <input id="pop_value"></input><br>
+
+
+    <!--Gdp US label and weight input-->
+    <label id="x_label" for="x_value">Gdp US:</label>
+    <input id="x_value"></input>
+    <select id="gdp_weight">
+      <option value="0.5">0.5</option>
+      <option value="1" selected>1</option>
+      <option value="2">2</option>
+    </select><br>
+
+    <!--Health Percent label and weight input-->
+    <label id="health_label" for="health_value">Health Percent:</label>
+    <input id="health_value"></input>
+    <select id="health_weight">
+      <option value="0.5">0.5</option>
+      <option value="1" selected>1</option>
+      <option value="2">2</option>
+    </select><br>
+
+
+
+
 </br>
 </body>
 </html>

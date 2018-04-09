@@ -14,6 +14,13 @@ var cleanList = [];
 //list of continents selected
 var continents = [];
 
+//weights
+var gdp_weight = 0;
+var health_weight = 0;
+var gdp_weight_val = 0;
+var health_weight_val = 0;
+var total_weight = 0;
+
 //continents Scale
 //color scale
 colorArray = ["#EAA851", "#99E584", "#62FACA", "#62B3D1", "#E490BB"]; 
@@ -88,8 +95,9 @@ function updateClicked(){
   yMap = 0;
   yAxis = 0;  
 
+
   // setup x 
-var xValue = function(d) { return d.gdpus;}, // data -> value
+var xValue = function(d) { return d.Agg;}, // data -> value
     xScale = d3.scale.linear().range([0, width]), // value -> display
     xMap = function(d) { return xScale(xValue(d));}, // data -> display
     xAxis = d3.svg.axis().scale(xScale).orient("bottom");
@@ -123,13 +131,24 @@ var div = d3.select("body").append("div")
                                 .key(function(d){return d.year;})
                                 .sortKeys(d3.ascending)
                                 .entries(data);  
+
+      //Getter function call for continents                         
       getChecked();
 
-      //console.log(country_data_sort);
+      //Getter for weights
+      health_weight = document.getElementById('health_weight'); 
+      health_weight_val = health_weight.options[health_weight.selectedIndex].value;
 
-      //console.log(chosen); 
+      gdp_weight = document.getElementById('gdp_weight');
+      gdp_weight_val = gdp_weight.options[gdp_weight.selectedIndex].value;
+      total_weight = parseInt(gdp_weight_val) + parseInt(health_weight_val);
+      console.log(gdp_weight_val + "+" + health_weight_val + "=" + total_weight);
+      
+
+      
       for(var i=0; i < data.length; i++){
           if((continents.indexOf(data[i].continent) !== -1) && data[i].year === yearval){
+
             newList.push(data[i]);  
           }
       }
@@ -137,9 +156,9 @@ var div = d3.select("body").append("div")
       cleanList = normalize(newList);
       console.log(cleanList);
   
-      console.log(continents);
-  xScale.domain([0, 65000]);
-  yScale.domain([40, 95]);
+      //console.log(continents);
+  xScale.domain([0, d3.max(cleanList, xValue)+1]);
+  yScale.domain([0, 95]);
 
 
   // x-axis
@@ -152,7 +171,7 @@ var div = d3.select("body").append("div")
       .attr("x", width/2)
       .attr("y", 40)
       .style("text-anchor", "middle")
-      .text("GDP US");
+      .text("Aggreigate Value");
 
   // y-axis
   svg.append("g")
@@ -179,7 +198,7 @@ var div = d3.select("body").append("div")
       .style("stroke","black")
       .attr("fill", function (d) { return colorScale(d.continent)}) 
       .on("mouseover", function(d) {  
-            insert(d['country'], d['gdpus'], d['lifexp'],d['population']);
+            insert(d['country'], d['gdpus'], d['lifexp'],d['population'],d['healthpercent']);
     });
   });
   
@@ -188,12 +207,14 @@ var div = d3.select("body").append("div")
 
 
 
-function insert(c_name, x, y, z){
+function insert(c_name, x, y, z, i){
     //document.getElementById('country').innerHTML = "";
     document.getElementById('country').value = c_name;
     document.getElementById('x_value').value = '$'+x;
     document.getElementById('y_value').value = y + ' years';
     document.getElementById('pop_value').value =z;
+    document.getElementById('health_value').value =i;
+
 }
 
 
@@ -232,7 +253,7 @@ var weights = {};
 //this will give all the values per country 
   for(var i = 0; i < data.length; i++){
     Object.keys(data[i]).forEach(function(key,index){
-        //console.log(data[i][key]);
+        
         if(!(key in max)){
           max[key] = data[i][key];
         }
@@ -248,7 +269,7 @@ var weights = {};
             min[key] = data[i][key];
         }
          if(!(key in weights)){
-          weights[key] = 1.0;
+          weights[key] = total_weight;
         }
         
 
@@ -295,6 +316,8 @@ function getChecked(){
     }
     
   }
+
+
   console.log("here: " + continents);
 }
 
